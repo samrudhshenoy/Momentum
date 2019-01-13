@@ -233,20 +233,37 @@ public class Main extends JPanel {
 
 		fileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				String pathname = System.getProperty("user.dir") + "/Documents/";
 				chooser = new JFileChooser();
 				chooser.setCursor(cursor);
-				filter = new FileNameExtensionFilter(".mc or .txt files", "txt", "mc");
+				filter = new FileNameExtensionFilter(".txt or .mc files", "txt", "mc");
 				chooser.setFileFilter(filter);
 				int returnedValue = chooser.showOpenDialog(console);
 				if (returnedValue == JFileChooser.APPROVE_OPTION) {
 					fileName = chooser.getSelectedFile().getPath();
 				}
-				try {
-					code = new Scanner(new File(fileName)).useDelimiter("\\A").next();
-					editor.setText(code);
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				}
+				if (returnedValue == JFileChooser.CANCEL_OPTION)
+			        return;
+				File file = chooser.getSelectedFile();
+			      if (file == null)
+			        return;
+
+			      pathname = file.getAbsolutePath();
+			      Scanner fileIn = null;
+			      try
+			      {
+			        fileIn = new Scanner(file);
+			      }
+			      catch (IOException ex)
+			      {
+			        System.out.println("*** Can't open file ***");
+			        return;
+			      }
+			      StringBuffer buffer = new StringBuffer((int)file.length());
+			      while (fileIn.hasNextLine())
+			        buffer.append(fileIn.nextLine());
+
+			      editor.setText(buffer.toString());
 
 			}
 		});
@@ -254,10 +271,13 @@ public class Main extends JPanel {
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0)
 		    {
-			  String pathname = System.getProperty("user.dir") + "/";
+			  String pathname = System.getProperty("user.dir") + "/Documents/";
 		      JFileChooser fileChooser = new JFileChooser(pathname);
+		      
 		      fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		      
 		      int result = fileChooser.showSaveDialog(null);
+		      
 		      if (result == JFileChooser.CANCEL_OPTION)
 		        return;
 
@@ -272,10 +292,10 @@ public class Main extends JPanel {
 		        }
 		        catch (IOException ex)
 		        {
-		          System.out.println("*** Can't create file ***");
+		          System.out.println("*** Could Not Create File ***");
 		          return;
 		        }
-
+		        fileOut.print(editor.getText());
 		        fileOut.close();
 		      }
 		    }
