@@ -260,11 +260,10 @@ public class Main extends JPanel {
 			        return;
 			      }
 			      StringBuffer buffer = new StringBuffer((int)file.length());
-			      while (fileIn.hasNextLine())
-			        buffer.append(fileIn.nextLine());
-
-			      editor.setText(buffer.toString());
-
+			      while (fileIn.hasNextLine()) {
+//			        buffer.append(fileIn.nextLine());
+			        editor.setText(editor.getText() + "\n" + fileIn.nextLine());
+			      }
 			}
 		});
 		
