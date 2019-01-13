@@ -73,14 +73,14 @@ public class Main extends JPanel {
 		
 		
 		JPanel console = new JPanel();
-		Icon icon = new ImageIcon("m.gif");
+//		Icon icon = new ImageIcon("m.gif");
 		console.setBackground(c);
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
 		Image image = toolkit.getImage("cursor.gif");
 		
 		Cursor cursor = toolkit.createCustomCursor(image, new Point(console.getX(), console.getY()), "img");
 		console.setCursor(cursor);
-		tabbedPane.addTab("omentum", icon, console, null);
+		tabbedPane.addTab("Momentum", null, console, null);
 		console.setLayout(null);
 		
 
@@ -152,15 +152,21 @@ public class Main extends JPanel {
 		consoleArea.setCursor(cursor);
 		consoleArea.setSelectedTextColor(p);
 		consoleArea.setSelectionColor(c);
-		consoleArea.setFont(new Font(Font.MONOSPACED, Font.BOLD, 12));
+		consoleArea.setFont(new Font(Font.MONOSPACED, Font.BOLD, 14));
 		consoleArea.setForeground(Color.WHITE);
 		
+		JScrollPane consolePane = new JScrollPane(editor,
+	              ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+	              ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		
 		consoleArea.setBackground(c);
-		scroll = new JScrollPane(consoleArea);
-		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		console.add(scroll);
+//		scroll = new JScrollPane(consoleArea);
+//		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+//		console.add(scroll);
+		console.add(consolePane);
 		console.add(consoleArea);
 
+	    
 		editor = new JTextArea(100, 100);
 		editor.setBounds(350, 50, 720, 383);
 		editor.setBackground(c);
@@ -168,10 +174,15 @@ public class Main extends JPanel {
 		editor.setSelectionColor(c);
 		editor.setForeground(y);
 		editor.setCursor(cursor);
-		editor.setFont(new Font(Font.MONOSPACED, Font.BOLD, 12));
-		scroll2 = new JScrollPane(editor);
-		scroll2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		console.add(scroll2);
+		editor.setCaretColor(Color.RED);
+		editor.setFont(new Font(Font.MONOSPACED, Font.BOLD, 14));
+		JScrollPane editorPane = new JScrollPane(editor,
+	              ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+	              ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+//		scroll2 = new JScrollPane(editor);
+//		scroll2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+//		console.add(scroll2);
+		console.add(editorPane, BorderLayout.EAST);
 		console.add(editor);
 		
 		JLabel openFiles = new JLabel("Select a .mc or .txt file or start directly");
@@ -183,9 +194,12 @@ public class Main extends JPanel {
 		console.add(t);
 		console.add(openFiles);
 
-		JButton fileButton = new JButton("Import an Existing File");
 		Icon i = new ImageIcon("dl.gif");
-		JButton runButton = new JButton("Run");
+		JButton fileButton = new JButton("Import an Existing File", i);
+		
+		Icon run = new ImageIcon("run.gif");
+		JButton runButton = new JButton("Run", run);
+		
 
 		runButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -237,8 +251,8 @@ public class Main extends JPanel {
 		fileButton.setBounds(5, 55, 200, 25);
 		console.add(fileButton);
 
-		runButton.setBounds(343, 10, 117, 25);
-    	runButton.setForeground(Color.GREEN);
+		runButton.setBounds(343, 10, 117, 30);
+    	runButton.setForeground(new Color(87, 182, 65));
 		console.add(runButton);
 		
 		
