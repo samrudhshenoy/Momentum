@@ -23,13 +23,17 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
+import API.PokemonIntro;
 
 public class Main extends JPanel {
 	private String fileName;
@@ -49,33 +53,68 @@ public class Main extends JPanel {
 	private ArrayList<Cond> conds;
 	private ArrayList<Number> numbers;
 	private Color c = new Color(47, 47, 47);
-	private Color y = new Color(100, 221, 247); // Text
+	private Color y = new Color(0, 255, 0); // Text
 	private Color p = new Color(255, 0, 0); // Highlight
 
 	public Main() {
+		
+		UIManager.put("nimbusBase", new Color(0, 0, 255));
+		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+		    if ("Nimbus".equals(info.getName())) {
+		        try {
+					UIManager.setLookAndFeel(info.getClassName());
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (UnsupportedLookAndFeelException e) {
+					e.printStackTrace();
+				}
+		        break;
+		    }
+		}
+		
 		numbers = new ArrayList<Number>();
 		texts = new ArrayList<Text>();
 		conds = new ArrayList<Cond>();
 		letters = new ArrayList<Letter>();
 		frmMomentum = new JFrame();
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Image mlogo = toolkit.getImage("mlogo.gif");
 		frmMomentum.setTitle("Momentum IDE for Beginning Developers");
+		frmMomentum.setIconImage(mlogo);
 		frmMomentum.setBounds(100, 100, 1100, 700);
-		frmMomentum.setBackground(c);
+		frmMomentum.setBackground(new Color(30, 30, 30));
 		frmMomentum.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmMomentum.getContentPane().setLayout(new BorderLayout(0, 0));
 		frmMomentum.setResizable(false);
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setBackground(c);
+		tabbedPane.setBackground(new Color(30, 30, 30));
 		frmMomentum.getContentPane().add(tabbedPane, BorderLayout.CENTER);
 
 		JPanel console = new JPanel();
-//		Icon icon = new ImageIcon("m.gif");
-		console.setBackground(c);
-		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		Image image = toolkit.getImage("cursor.gif");
+		
+	    PokemonIntro panel = new PokemonIntro();
+		
+		console.add(panel);
+		panel.setBounds(15, 85, 320, 540);
+	    console.addMouseMotionListener(panel);
+	    console.addMouseListener(panel);
+	    console.setVisible(true);
+	    Toolkit toolk = Toolkit.getDefaultToolkit();
+		Image im = toolk.getImage("purplecursor.gif");
 
-		Cursor cursor = toolkit.createCustomCursor(image, new Point(console.getX(), console.getY()), "img");
+		Cursor cur = toolk.createCustomCursor(im, new Point(console.getX(), console.getY()), "img");
+		panel.setCursor(cur);
+
+		console.setBackground(new Color(30, 30, 30));
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		Image image = tk.getImage("purplecursor.gif");
+
+		Cursor cursor = tk.createCustomCursor(image, new Point(console.getX(), console.getY()), "img");
 		console.setCursor(cursor);
 		tabbedPane.addTab("Momentum", null, console, null);
 		console.setLayout(null);
@@ -83,13 +122,13 @@ public class Main extends JPanel {
 		JLabel editorLabel = new JLabel("Editor");
 		editorLabel.setForeground(Color.WHITE);
 		editorLabel.setBounds(675, 10, 100, 50);
-		editorLabel.setFont(editorLabel.getFont().deriveFont(Font.BOLD, 14f));
+		editorLabel.setFont(editorLabel.getFont().deriveFont(Font.BOLD, 16f));
 		console.add(editorLabel);
 
 		JLabel consoleLabel = new JLabel("Console");
 		consoleLabel.setBounds(675, 450, 100, 50);
 		consoleLabel.setForeground(Color.WHITE);
-		consoleLabel.setFont(consoleLabel.getFont().deriveFont(Font.BOLD, 14f));
+		consoleLabel.setFont(consoleLabel.getFont().deriveFont(Font.BOLD, 16f));
 		console.add(consoleLabel);
 
 		JLabel ceLine = new JLabel("");
@@ -149,17 +188,14 @@ public class Main extends JPanel {
 		consoleArea.setSelectionColor(c);
 		consoleArea.setFont(new Font(Font.MONOSPACED, Font.BOLD, 14));
 		consoleArea.setForeground(Color.WHITE);
-
-		JScrollPane consolePane = new JScrollPane(editor, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
-				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
 		consoleArea.setBackground(c);
-//		scroll = new JScrollPane(consoleArea);
-//		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-//		console.add(scroll);
-		console.add(consolePane);
-		console.add(consoleArea);
 
+		scroll2 = new JScrollPane(consoleArea,ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scroll2.setBounds(350, 490, 720, 135);
+		
+		console.add(scroll2);
+		
+		
 		editor = new JTextArea(100, 100);
 		editor.setBounds(350, 50, 720, 383);
 		editor.setBackground(c);
@@ -169,13 +205,10 @@ public class Main extends JPanel {
 		editor.setCursor(cursor);
 		editor.setCaretColor(Color.RED);
 		editor.setFont(new Font(Font.MONOSPACED, Font.BOLD, 14));
-		JScrollPane editorPane = new JScrollPane(editor, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-//		scroll2 = new JScrollPane(editor);
-//		scroll2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-//		console.add(scroll2);
-		console.add(editorPane, BorderLayout.EAST);
-		console.add(editor);
+		scroll = new JScrollPane(editor,ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scroll.setBounds(350, 50, 720, 383);
+		
+		console.add(scroll);
 
 		JLabel openFiles = new JLabel("Select a .mc or .txt file or start directly");
 		JLabel t = new JLabel("programming in the editor!");
@@ -233,6 +266,7 @@ public class Main extends JPanel {
 
 		fileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				String pathname = System.getProperty("user.dir") + "/Documents/";
 				chooser = new JFileChooser();
 				chooser.setCursor(cursor);
 				filter = new FileNameExtensionFilter(".txt or .mc files", "txt", "mc");
@@ -241,23 +275,48 @@ public class Main extends JPanel {
 				if (returnedValue == JFileChooser.APPROVE_OPTION) {
 					fileName = chooser.getSelectedFile().getPath();
 				}
-				try {
-					code = new Scanner(new File(fileName)).useDelimiter("\\A").next();
-					editor.setText(code);
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				}
+				if (returnedValue == JFileChooser.CANCEL_OPTION)
+			        return;
+				File file = chooser.getSelectedFile();
+			      if (file == null)
+			        return;
 
+			      pathname = file.getAbsolutePath();
+			      Scanner fileIn = null;
+			      try
+			      {
+			        fileIn = new Scanner(file);
+			      }
+			      catch (IOException ex)
+			      {
+			        System.out.println("*** Can't open file ***");
+			        return;
+			      }
+			      StringBuffer buffer = new StringBuffer((int)file.length());
+			      int i = 0;
+			      while (fileIn.hasNextLine()) {
+//			        buffer.append(fileIn.nextLine());
+			    	  if (i == 0) {
+			    		  editor.setText(fileIn.nextLine());
+			    		  i++;
+			    	  }
+			    	  else {
+			    		  editor.setText(editor.getText() + "\n" + fileIn.nextLine());
+			    	  }
+			      }
 			}
 		});
 		
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0)
 		    {
-			  String pathname = System.getProperty("user.dir") + "/";
+			  String pathname = System.getProperty("user.dir") + "/Documents/";
 		      JFileChooser fileChooser = new JFileChooser(pathname);
+		      
 		      fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		      
 		      int result = fileChooser.showSaveDialog(null);
+		      
 		      if (result == JFileChooser.CANCEL_OPTION)
 		        return;
 
@@ -272,10 +331,10 @@ public class Main extends JPanel {
 		        }
 		        catch (IOException ex)
 		        {
-		          System.out.println("*** Can't create file ***");
+		          System.out.println("*** Could Not Create File ***");
 		          return;
 		        }
-
+		        fileOut.print(editor.getText());
 		        fileOut.close();
 		      }
 		    }
@@ -284,13 +343,15 @@ public class Main extends JPanel {
 			
 		});
 		fileButton.setBounds(15, 55, 150, 25);
+		fileButton.setFont(fileButton.getFont().deriveFont(Font.PLAIN, 10f));
 		console.add(fileButton);
 		
 		saveButton.setBounds(180, 55, 150, 25);
+		saveButton.setFont(saveButton.getFont().deriveFont(Font.PLAIN, 10f));
 		console.add(saveButton);
 		
 		runButton.setBounds(349, 25, 117, 20);
-		runButton.setForeground(new Color(87, 182, 65));
+		runButton.setForeground(new Color(255, 255, 255));
 		console.add(runButton);
 
 	}
@@ -393,7 +454,6 @@ public class Main extends JPanel {
 	}
 
 	public void changeNumber(int index) {
-		System.out.println(index);
 		if (ck[2 + index].trim().equals("=")) {
 			for (int i = 0; i < numbers.size(); i++) {
 				if (numbers.get(i).getName().trim().equals(ck[1 + index]))
@@ -554,7 +614,10 @@ public class Main extends JPanel {
 
 			}
 		}
-		return "none";
+		if (consoleArea != null) consoleArea.append("\n");
+		consoleArea.append(currentStatement + " : The variable name " + name + " does not exist\n\n");
+
+		return "";
 	}
 
 	public void processCond(int index) {
@@ -607,31 +670,41 @@ public class Main extends JPanel {
 				processChange(4);
 			else if (ck[4].equals("Print"))
 				processPrint(4);
+			else if (ck[4].equals("Input"))
+				processInput(4);
+			else if (ck[4].equals("Number"))
+				processNumber(4);
+			else if (ck[4].equals("Text"))
+				processText(4);
+			else if (ck[4].equals("Cond"))
+				processCond(4);
+			else if (ck[4].equals("Letter"))
+				processLetter(4);
 		}
 	}
 
 	public void processChange(int index) {
 		String dataType = "";
 		for (int b = 0; b < numbers.size(); b++) {
-			if (numbers.get(b).getName().trim().equals(ck[1])) {
+			if (numbers.get(b).getName().trim().equals(ck[1 + index])) {
 				dataType = "number";
 				changeNumber(index);
 			}
 		}
 		for (int y = 0; y < conds.size(); y++) {
-			if (conds.get(y).getName().trim().equals(ck[1])) {
+			if (conds.get(y).getName().trim().equals(ck[1 + index])) {
 				dataType = "cond";
 				changeCond(index);
 			}
 		}
 		for (int x = 0; x < texts.size(); x++) {
-			if (texts.get(x).getName().trim().equals(ck[1])) {
+			if (texts.get(x).getName().trim().equals(ck[1 + index])) {
 				dataType = "text";
 				changeText(index);
 			}
 		}
 		for (int e = 0; e < letters.size(); e++) {
-			if (letters.get(e).getName().trim().equals(ck[1])) {
+			if (letters.get(e).getName().trim().equals(ck[1 + index])) {
 				dataType = "letter";
 				changeLetter(index);
 			}
@@ -663,6 +736,12 @@ public class Main extends JPanel {
 					processChange(0);
 				} else if (tag.equals("If")) {
 					processIf();
+				} else if (tag.equals("Input")) {
+					processInput(0);
+				} else {
+					if (consoleArea != null) consoleArea.append("\n");
+					consoleArea.append(currentStatement + " : Invalid starting keyword\n\n");
+
 				}
 
 				j++;
@@ -670,6 +749,22 @@ public class Main extends JPanel {
 
 			j = original;
 			currentStatement = "";
+		}
+	}
+
+	public void processInput(int index) {
+		if (ck[1 + index].equals("number")) {
+			double d = Double.parseDouble(JOptionPane.showInputDialog("Enter value for " + ck[2 + index]));
+			numbers.add(new Number(ck[2 + index], d));
+		} else if (ck[1 + index].equals("text")) {
+			String s = JOptionPane.showInputDialog("Enter value for " + ck[2 + index]);
+			texts.add(new Text(ck[2 + index], s));
+		} else if (ck[1 + index].equals("cond")) {
+			boolean b = Boolean.parseBoolean(JOptionPane.showInputDialog("Enter value for " + ck[2 + index]));
+			conds.add(new Cond(ck[2 + index], b));
+		} else if (ck[1 + index].equals("letter")) {
+			char l = JOptionPane.showInputDialog("Enter value for " + ck[2 + index]).charAt(0);
+			letters.add(new Letter(ck[2 + index], l));
 		}
 	}
 
@@ -711,7 +806,10 @@ public class Main extends JPanel {
 		}
 
 		if (!newVar) {
-			consoleArea.append("The variable name " + name + " is already being used \n");
+			if (!consoleArea.equals(null)) {
+				consoleArea.append("\n");
+			}
+			consoleArea.append(currentStatement + " : The variable name " + name + " is already being used \n\n");
 
 		}
 		return newVar;
@@ -751,6 +849,11 @@ public class Main extends JPanel {
 				}
 			}
 		}
+		if (!printed) {
+			if (consoleArea != null) consoleArea.append("\n");
+			consoleArea.append(currentStatement + " : The variable name " + name + " does not exist\n\n");
+
+		}
 	}
 
 	private void reset() {
@@ -761,4 +864,3 @@ public class Main extends JPanel {
 		consoleArea.setText(null);
 	}
 }
-
